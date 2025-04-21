@@ -4,6 +4,7 @@ import MessageBubble from "./MessageBubble";
 import { FiSend } from "react-icons/fi";
 import { sendChatMessage } from "../src/utils/api";
 import PaymentModal from "./PaymentModsal";
+import Image from "next/image";
 
 interface Message {
   text: string | JSX.Element;
@@ -69,7 +70,7 @@ const ChatInterface: React.FC = () => {
                   ⚠️
                 </span>
                 Failed to load welcome message from the bot. Please try again
-                later.
+                later. <span>{String(err)}</span>
               </div>
             ),
             isBot: true,
@@ -94,10 +95,16 @@ const ChatInterface: React.FC = () => {
     add(<div className="text-gray-800">{input}</div>, false);
 
     try {
-      const res = await sendChatMessage(sessionId, input.trim());
+      const res = (await sendChatMessage(sessionId, input.trim())) as {
+        data: { response: MenuItem[] | string };
+      };
 
-      if (res && res.data && Array.isArray(res.data.response)) {
-        if (res.data.response.length > 0) {
+      if (
+        res &&
+        res.data &&
+        Array.isArray((res.data as { response: MenuItem[] }).response)
+      ) {
+        if ((res.data as { response: MenuItem[] }).response.length > 0) {
           add(
             <div className="space-y-3 bg-gray-100 p-3 rounded-lg text-gray-700">
               <h3 className="mb-2 font-semibold text-blue-600 text-lg">
@@ -107,31 +114,32 @@ const ChatInterface: React.FC = () => {
                 Menu Items Found:
               </h3>
               <ul>
-                {res.data.response.map((item: MenuItem) => (
-                  <li key={item._id} className="mb-2">
-                    <div className="flex items-center">
-                      {item.image && (
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="mr-3 rounded w-12 h-12 object-cover"
-                        />
-                      )}
-                      <div>
-                        <p className="font-semibold">{item.name}</p>
-                        <p className="text-gray-500 text-sm">
-                          {item.description}
-                        </p>
-                        <p className="font-medium text-blue-700">
-                          ₦{item.price.toLocaleString()}
-                        </p>
+                {Array.isArray(res.data.response) &&
+                  res.data.response.map((item: MenuItem) => (
+                    <li key={item._id} className="mb-2">
+                      <div className="flex items-center">
+                        {item.image && (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            className="mr-3 rounded w-12 h-12 object-cover"
+                          />
+                        )}
+                        <div>
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="text-gray-500 text-sm">
+                            {item.description}
+                          </p>
+                          <p className="font-medium text-blue-700">
+                            ₦{item.price.toLocaleString()}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  ))}
               </ul>
               <p className="text-gray-600 text-sm italic">
-                Let me know if you'd like to order anything!
+                Let me know if you would like to order anything!
               </p>
             </div>,
             true
@@ -199,7 +207,7 @@ const ChatInterface: React.FC = () => {
           </span>
           Chat with our Assistant
         </h2>
-        <p className="text-indigo-500 text-sm">We're here to help!</p>
+        <p className="text-indigo-500 text-sm">We are here to help!</p>
       </div>
       <div className="flex-1 space-y-3 bg-transparent p-3 overflow-y-auto">
         {messages.map((m, i) => (

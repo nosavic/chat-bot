@@ -15,10 +15,10 @@ const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
 });
 
-export const sendChatMessage = async (
+export const sendChatMessage = async <T>(
   sessionId: string,
   input: string
-): Promise<ApiResponse<any>> => {
+): Promise<ApiResponse<T>> => {
   try {
     const response = await API.post("/chat", { sessionId, input });
     return { data: response.data };

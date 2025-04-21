@@ -2,12 +2,19 @@ import { useState } from "react";
 import { FiX, FiCheckCircle } from "react-icons/fi";
 import { motion } from "framer-motion";
 
+interface PaymentModalProps {
+  isOpen: boolean;
+  total: number;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
 export default function PaymentModal({
   isOpen,
   total,
   onClose,
   onSuccess,
-}: any) {
+}: PaymentModalProps) {
   const [email, setEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
