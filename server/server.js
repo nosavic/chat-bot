@@ -10,7 +10,12 @@ const chatRoutes = require("./routes/chatRoutes");
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CLIENT_URL,
+  credentials: true, // if using cookies or auth headers
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // Database Connection
