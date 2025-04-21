@@ -2,16 +2,10 @@ const Session = require("../models/Session");
 const MenuItem = require("../models/MenuItem");
 const Order = require("../models/Order");
 
-// Function to handle chat input
-// Function to handle chat input
-// Function to handle chat input
-// Function to handle chat input
-// Function to handle chat input
 exports.handleChatInput = async (req, res) => {
   const { sessionId, input } = req.body;
 
   try {
-    // Retrieve or create a session
     let session = await Session.findOne({ sessionId }).populate("currentOrder");
 
     if (!session) {
